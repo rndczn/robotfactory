@@ -3,12 +3,14 @@ from collections import defaultdict as ddict
 
 from tabulate import tabulate
 
+random.seed(0)
+
 ROBOT_MONEY_PRICE = 3
 ROBOT_FOO_PRICE = 6
 MAX_FOOBAR_SELL = 5
 FOOBAR_PRICE = 1
 
-VERBOSE = 3
+VERBOSITY = 3
 
 TARGET = 30
 
@@ -72,19 +74,19 @@ class Robot:
         self.time_remaining += Robot._COSTS[activity]
 
     def idle(self):
-        if VERBOSE > 2:
+        if VERBOSITY > 2:
             print(self, 'does nothing')
 
     def mine_foo(self):
         self.foos.append(Foo())
-        if VERBOSE > 2:
+        if VERBOSITY > 2:
             print(self, 'mines', self.foos[-1])
 
     def mine_bar(self):
         time = Robot._COSTS['mine_bar']
         while time >= 0:
             self.bars.append(Bar())
-            if VERBOSE > 2:
+            if VERBOSITY > 2:
                 print(self, 'mines', self.bars[-1])
 
             time -= random.uniform(.5, 2)
@@ -94,7 +96,7 @@ class Robot:
         if random.random() <= .6:
             bar = self.bars.pop()
             self.foobars.append(FooBar(foo, bar))
-            if VERBOSE > 2:
+            if VERBOSITY > 2:
                 print(self, 'makes', self.foobars[-1])
 
     def sell_foobar(self):
@@ -102,7 +104,7 @@ class Robot:
         while money < 5 * FOOBAR_PRICE and self.foobars:
             money += FOOBAR_PRICE
             fb = self.foobars.pop()
-            if VERBOSE > 2:
+            if VERBOSITY > 2:
                 print(self, 'sells', fb)
         self.money += money
 
@@ -112,7 +114,7 @@ class Robot:
             for _ in range(ROBOT_FOO_PRICE): self.foos.pop()
             self.money -= ROBOT_MONEY_PRICE
             robots.append(Robot())
-            if VERBOSE > 2:
+            if VERBOSITY > 2:
                 print(self, 'buys ', robots[-1])
         return robots
 
@@ -127,9 +129,9 @@ class Factory:
         self.robots = []
 
     def print_status(self):
-        if VERBOSE:
+        if VERBOSITY:
             self.print_resources()
-            if VERBOSE > 1:
+            if VERBOSITY > 1:
                 self.print_robots()
 
     def print_resources(self):
@@ -216,7 +218,7 @@ class Factory:
             robot.set_activity('mine_foo')
 
     def turn(self):
-        if VERBOSE > 2:
+        if VERBOSITY > 2:
             print()
             print(' Actions '.center(50,'-'))
         for robot in self.robots:
